@@ -19,10 +19,10 @@ public class JavaQuizBot extends TelegramLongPollingBot {
 
     static Logger logger = LogManager.getLogger(JavaQuizBot.class);
 
-    @Value("${bot.tok}")
-    private String token; //"1994356444:AAEEH18cW-sL6O9s6h5mDaUAhE4gVff5g_E";
+    @Value("${bot.token}")
+    private String token;
     @Value("${bot.name}")
-    private String username; // "omg_commerce_omg_bot";
+    private String username;
 
 
     @PostConstruct

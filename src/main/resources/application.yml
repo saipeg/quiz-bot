@@ -1,4 +1,4 @@
 bot:
-  tok:
+  token:
   name:
 server.port: 8087
