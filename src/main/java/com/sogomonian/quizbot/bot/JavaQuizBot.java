@@ -1,7 +1,9 @@
 package com.sogomonian.quizbot.bot;
 
+import com.sogomonian.quizbot.service.impl.QuestionServiceImpl;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 import org.telegram.telegrambots.bots.TelegramLongPollingBot;
@@ -18,11 +20,16 @@ import javax.annotation.PostConstruct;
 public class JavaQuizBot extends TelegramLongPollingBot {
 
     static Logger logger = LogManager.getLogger(JavaQuizBot.class);
+    private final QuestionServiceImpl questionService;
 
     @Value("${bot.token}")
     private String token;
     @Value("${bot.name}")
     private String username;
+
+    public JavaQuizBot(QuestionServiceImpl questionService) {
+        this.questionService = questionService;
+    }
 
 
     @PostConstruct
@@ -45,7 +52,10 @@ public class JavaQuizBot extends TelegramLongPollingBot {
                     execute(
                             SendMessage.builder()
                                     .chatId(message.getChatId().toString())
-                                    .text("You sent: \n\n" + message.getText())
+                                    .text("You sent: \n\n"
+                                            + message.getText()
+                                            + "SIZE = "
+                                            + questionService.getAllQuestions().get(1))
                                     .build());
                 } catch (TelegramApiException e) {
                     e.printStackTrace();

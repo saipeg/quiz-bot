@@ -1,4 +1,12 @@
 bot:
-  token:
-  name:
+  token: 1994356444:AAEEH18cW-sL6O9s6h5mDaUAhE4gVff5g_E
+  name: omg_commerce_omg_bot
 server.port: 8087
+
+spring:
+  datasource:
+    hikari:
+      schema: public
+    url: jdbc:postgresql://localhost:5432/quiz
+    username: postgres
+    password: postgres
