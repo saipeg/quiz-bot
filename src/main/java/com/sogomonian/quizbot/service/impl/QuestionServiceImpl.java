@@ -21,4 +21,11 @@ public class QuestionServiceImpl implements QuestionService {
         List<Questions> questions = questionsRepository.findAll();
         return questions;
     }
+
+    public Questions randomQuestion() {
+        int qty = questionsRepository.findAll().size();
+        int idx = (int) (Math.random() * qty);
+        Questions questionPage = questionsRepository.findById(idx).get();
+        return questionPage;
+    }
 }

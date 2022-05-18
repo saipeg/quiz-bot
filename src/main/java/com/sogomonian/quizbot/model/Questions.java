@@ -2,6 +2,7 @@ package com.sogomonian.quizbot.model;
 
 import lombok.AllArgsConstructor;
 import lombok.NoArgsConstructor;
+import lombok.ToString;
 
 import javax.persistence.*;
 
@@ -37,19 +38,12 @@ public class Questions {
         this.answer = answer;
     }
 
-    public int getId() {
-        return id;
-    }
-
-    public void setId(int id) {
-        this.id = id;
-    }
 
     @Override
     public String toString() {
-        return "Questions{" +
-                "question='" + question + '\'' +
-                ", answer='" + answer + '\'' +
-                '}';
+        return question
+                + "\n"
+                + "\n"
+                + answer;
     }
 }

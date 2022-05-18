@@ -52,10 +52,7 @@ public class JavaQuizBot extends TelegramLongPollingBot {
                     execute(
                             SendMessage.builder()
                                     .chatId(message.getChatId().toString())
-                                    .text("You sent: \n\n"
-                                            + message.getText()
-                                            + "SIZE = "
-                                            + questionService.getAllQuestions().get(1))
+                                    .text(String.valueOf(questionService.randomQuestion()))
                                     .build());
                 } catch (TelegramApiException e) {
                     e.printStackTrace();
