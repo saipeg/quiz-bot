@@ -15,6 +15,7 @@ import org.telegram.telegrambots.meta.exceptions.TelegramApiException;
 import org.telegram.telegrambots.updatesreceivers.DefaultBotSession;
 
 import javax.annotation.PostConstruct;
+import java.util.Locale;
 
 @Component
 public class JavaQuizBot extends TelegramLongPollingBot {
@@ -52,7 +53,8 @@ public class JavaQuizBot extends TelegramLongPollingBot {
                     execute(
                             SendMessage.builder()
                                     .chatId(message.getChatId().toString())
-                                    .text(String.valueOf(questionService.randomQuestion()))
+                                    .text(String.valueOf(questionService
+                                            .randomQuestion().toString()))
                                     .build());
                 } catch (TelegramApiException e) {
                     e.printStackTrace();
