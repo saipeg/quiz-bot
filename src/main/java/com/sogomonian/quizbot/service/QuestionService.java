@@ -9,5 +9,6 @@ import java.util.List;
 public interface QuestionService {
 
     public List<Questions> getAllQuestions();
+    public Questions randomQuestion();
 
 }
