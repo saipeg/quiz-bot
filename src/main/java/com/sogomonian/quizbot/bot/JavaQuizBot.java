@@ -1,5 +1,6 @@
 package com.sogomonian.quizbot.bot;
 
+import com.sogomonian.quizbot.helper.Emojis;
 import com.sogomonian.quizbot.model.Questions;
 import com.sogomonian.quizbot.service.impl.QuestionServiceImpl;
 import lombok.SneakyThrows;
@@ -24,6 +25,8 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
+import static com.sogomonian.quizbot.helper.Emojis.*;
+
 @Component
 public class JavaQuizBot extends TelegramLongPollingBot {
 
@@ -31,11 +34,14 @@ public class JavaQuizBot extends TelegramLongPollingBot {
 
     static Logger logger = LogManager.getLogger(JavaQuizBot.class);
     private final QuestionServiceImpl questionService;
+    private Emojis emojis;
 
     @Value("${bot.token}")
     private String token;
     @Value("${bot.name}")
     private String username;
+    @Value("${bot.welcome}")
+    private String welcome;
 
     public JavaQuizBot(QuestionServiceImpl questionService) {
         this.questionService = questionService;
@@ -71,50 +77,22 @@ public class JavaQuizBot extends TelegramLongPollingBot {
         if (data.equals("giveQuestion")) {
             Questions questions = questionService.randomQuestion();
             answer = questions.getAnswer();
-            execute(SendMessage.builder()
-                    .text(questions.getQuestion())
-                    .chatId(message.getChatId().toString())
-                    .build());
-            buttons.add(
-                    Arrays.asList(
-                            InlineKeyboardButton.builder()
-                                    .text("Проверить")
-                                    .callbackData("giveAnswer")
-                                    .build()
-                    )
-            );
+            execute(SendMessage.builder().text(questions.getQuestion()).chatId(message.getChatId().toString()).build());
+            buttons.add(Arrays.asList(InlineKeyboardButton.builder().text(CHECK.getCode() + "Проверить" + CHECK.getCode()).callbackData("giveAnswer").build()));
         }
 
         if (data.equals("giveAnswer")) {
-            execute(SendMessage.builder()
-                    .text(answer)
-                    .chatId(message.getChatId().toString())
-                    .build());
+            execute(SendMessage.builder().text(answer).chatId(message.getChatId().toString()).build());
 
-            buttons.add(
-                    Arrays.asList(
-                            InlineKeyboardButton.builder()
-                                    .text("Получить вопрос")
-                                    .callbackData("giveQuestion")
-                                    .build()
-                    )
-            );
+            buttons.add(Arrays.asList(InlineKeyboardButton.builder().text(QUESTION.getCode() + "Получить вопрос" + QUESTION.getCode()).callbackData("giveQuestion").build()));
 
             getQuestionButton();
-            execute(SendMessage.builder()
-                    .text("\n ---------------------------------")
-                    .chatId(message.getChatId().toString())
-                    .replyMarkup(InlineKeyboardMarkup.builder().keyboard(buttons).build())
-                    .build());
+            execute(SendMessage.builder().text(CUP.getCode() + "Попробуем еще? " + CUP.getCode()).chatId(message.getChatId().toString()).replyMarkup(InlineKeyboardMarkup.builder().keyboard(buttons).build()).build());
 
 //            handleMessage(callbackQuery.getMessage());
         }
 
-        execute(EditMessageReplyMarkup.builder()
-                        .chatId(message.getChatId().toString())
-                        .messageId(message.getMessageId())
-                        .replyMarkup(InlineKeyboardMarkup.builder().keyboard(buttons).build())
-                        .build());
+        execute(EditMessageReplyMarkup.builder().chatId(message.getChatId().toString()).messageId(message.getMessageId()).replyMarkup(InlineKeyboardMarkup.builder().keyboard(buttons).build()).build());
     }
 
     @SneakyThrows
@@ -123,44 +101,14 @@ public class JavaQuizBot extends TelegramLongPollingBot {
 //        }
         List<List<InlineKeyboardButton>> buttons = getQuestionButton();
 
-        execute(SendMessage.builder()
-                .text("Привет! Ты пишешь боту, который поможет освежить основные теоретические вопросы по java-core!")
-                .chatId(message.getChatId().toString())
-                .replyMarkup(InlineKeyboardMarkup.builder().keyboard(buttons).build())
-                .build());
+        execute(SendMessage.builder().text(welcome).chatId(message.getChatId().toString()).replyMarkup(InlineKeyboardMarkup.builder().keyboard(buttons).build()).build());
     }
 
     private List<List<InlineKeyboardButton>> getQuestionButton() {
         List<List<InlineKeyboardButton>> buttons = new ArrayList<>();
-        buttons.add(
-                Arrays.asList(
-                        InlineKeyboardButton.builder()
-                                .text("Получить вопрос")
-                                .callbackData("giveQuestion")
-                                .build()
-                )
-        );
+        buttons.add(Arrays.asList(InlineKeyboardButton.builder().text(QUESTION.getCode() + "Получить вопрос" + QUESTION.getCode()).callbackData("giveQuestion").build()));
         return buttons;
     }
-
-//    private InlineKeyboardMarkup sendInlineKeyBoardMessage() {
-//        List<List<InlineKeyboardButton>> buttons = new ArrayList<>();
-//        InlineKeyboardMarkup inlineKeyboardMarkup = new InlineKeyboardMarkup();
-//
-//        InlineKeyboardButton getQuestion = new InlineKeyboardButton();
-//
-//        getQuestion.setText("Получить вопрос");
-//        getQuestion.setCallbackData("buttonYes");
-//
-//        List<InlineKeyboardButton> keyboardButtonsRow1 = new ArrayList<>();
-//
-//        keyboardButtonsRow1.add(getQuestion);
-//
-//        inlineKeyboardMarkup.setKeyboard(Collections.singletonList(keyboardButtonsRow1));
-//
-////        return new SendMessage().setChatId(chatId).setText("Пример").setReplyMarkup(inlineKeyboardMarkup);
-//        return inlineKeyboardMarkup;
-//    }
 
 
     @Override
