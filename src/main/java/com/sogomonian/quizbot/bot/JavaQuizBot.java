@@ -1,5 +1,6 @@
 package com.sogomonian.quizbot.bot;
 
+import com.sogomonian.quizbot.model.Questions;
 import com.sogomonian.quizbot.service.impl.QuestionServiceImpl;
 import lombok.SneakyThrows;
 import org.apache.logging.log4j.LogManager;
@@ -25,6 +26,8 @@ import java.util.List;
 
 @Component
 public class JavaQuizBot extends TelegramLongPollingBot {
+
+    String answer;
 
     static Logger logger = LogManager.getLogger(JavaQuizBot.class);
     private final QuestionServiceImpl questionService;
@@ -64,25 +67,50 @@ public class JavaQuizBot extends TelegramLongPollingBot {
     private void handleCallback(CallbackQuery callbackQuery) {
         Message message = callbackQuery.getMessage();
         String data = callbackQuery.getData();
+        List<List<InlineKeyboardButton>> buttons = new ArrayList<>();
         if (data.equals("giveQuestion")) {
+            Questions questions = questionService.randomQuestion();
+            answer = questions.getAnswer();
             execute(SendMessage.builder()
-                    .text(questionService.randomQuestion().toString())
+                    .text(questions.getQuestion())
                     .chatId(message.getChatId().toString())
                     .build());
+            buttons.add(
+                    Arrays.asList(
+                            InlineKeyboardButton.builder()
+                                    .text("Проверить")
+                                    .callbackData("giveAnswer")
+                                    .build()
+                    )
+            );
         }
 
-        List<List<InlineKeyboardButton>> buttons = new ArrayList<>();
-        buttons.add(
-                Arrays.asList(
-                        InlineKeyboardButton.builder()
-                                .text("Вам выпал простой вопрос")
-                                .callbackData("giveQuestion")
-                                .build()
-                )
-        );
+        if (data.equals("giveAnswer")) {
+            execute(SendMessage.builder()
+                    .text(answer)
+                    .chatId(message.getChatId().toString())
+                    .build());
 
-        execute(
-                EditMessageReplyMarkup.builder()
+            buttons.add(
+                    Arrays.asList(
+                            InlineKeyboardButton.builder()
+                                    .text("Получить вопрос")
+                                    .callbackData("giveQuestion")
+                                    .build()
+                    )
+            );
+
+            getQuestionButton();
+            execute(SendMessage.builder()
+                    .text("\n ---------------------------------")
+                    .chatId(message.getChatId().toString())
+                    .replyMarkup(InlineKeyboardMarkup.builder().keyboard(buttons).build())
+                    .build());
+
+//            handleMessage(callbackQuery.getMessage());
+        }
+
+        execute(EditMessageReplyMarkup.builder()
                         .chatId(message.getChatId().toString())
                         .messageId(message.getMessageId())
                         .replyMarkup(InlineKeyboardMarkup.builder().keyboard(buttons).build())
@@ -91,8 +119,18 @@ public class JavaQuizBot extends TelegramLongPollingBot {
 
     @SneakyThrows
     private void handleMessage(Message message) {
-        if (message.hasText()) {
-        }
+//        if (message.hasText()) {
+//        }
+        List<List<InlineKeyboardButton>> buttons = getQuestionButton();
+
+        execute(SendMessage.builder()
+                .text("Привет! Ты пишешь боту, который поможет освежить основные теоретические вопросы по java-core!")
+                .chatId(message.getChatId().toString())
+                .replyMarkup(InlineKeyboardMarkup.builder().keyboard(buttons).build())
+                .build());
+    }
+
+    private List<List<InlineKeyboardButton>> getQuestionButton() {
         List<List<InlineKeyboardButton>> buttons = new ArrayList<>();
         buttons.add(
                 Arrays.asList(
@@ -102,12 +140,7 @@ public class JavaQuizBot extends TelegramLongPollingBot {
                                 .build()
                 )
         );
-
-        execute(SendMessage.builder()
-                .text("Удачи!")
-                .chatId(message.getChatId().toString())
-                .replyMarkup(InlineKeyboardMarkup.builder().keyboard(buttons).build())
-                .build());
+        return buttons;
     }
 
 //    private InlineKeyboardMarkup sendInlineKeyBoardMessage() {
