@@ -89,7 +89,6 @@ public class JavaQuizBot extends TelegramLongPollingBot {
             getQuestionButton();
             execute(SendMessage.builder().text(CUP.getCode() + "Попробуем еще? " + CUP.getCode()).chatId(message.getChatId().toString()).replyMarkup(InlineKeyboardMarkup.builder().keyboard(buttons).build()).build());
 
-//            handleMessage(callbackQuery.getMessage());
         }
 
         execute(EditMessageReplyMarkup.builder().chatId(message.getChatId().toString()).messageId(message.getMessageId()).replyMarkup(InlineKeyboardMarkup.builder().keyboard(buttons).build()).build());
@@ -97,8 +96,7 @@ public class JavaQuizBot extends TelegramLongPollingBot {
 
     @SneakyThrows
     private void handleMessage(Message message) {
-//        if (message.hasText()) {
-//        }
+
         List<List<InlineKeyboardButton>> buttons = getQuestionButton();
 
         execute(SendMessage.builder().text(welcome).chatId(message.getChatId().toString()).replyMarkup(InlineKeyboardMarkup.builder().keyboard(buttons).build()).build());
