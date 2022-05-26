@@ -79,24 +79,27 @@ public class JavaQuizBot extends TelegramLongPollingBot {
             Questions questions = questionService.randomQuestion();
             answer = questions.getAnswer();
             execute(SendMessage.builder().text(questions.getQuestion()).chatId(message.getChatId().toString()).build());
-            buttons.add(Arrays.asList(InlineKeyboardButton.builder().text(CHECK.getCode() + "Проверить" + CHECK.getCode()).callbackData("giveAnswer").build()));
+            buttons.add(Arrays.asList(InlineKeyboardButton.builder().text("Проверить" + CHECK.getCode()).callbackData("giveAnswer").build()));
             execute(EditMessageReplyMarkup.builder().chatId(message.getChatId().toString()).messageId(message.getMessageId()).replyMarkup(InlineKeyboardMarkup.builder().keyboard(buttons).build()).build());
 
         }
 
         if (data.equals("giveAnswer")) {
             execute(SendMessage.builder().text(answer).chatId(message.getChatId().toString()).build());
-            buttons.add(Arrays.asList(InlineKeyboardButton.builder().text(QUESTION.getCode() + "Получить вопрос----" + QUESTION.getCode()).callbackData("giveQuestion").build()));
-            execute(SendMessage.builder().text(CUP.getCode() + "Попробуем еще? " + CUP.getCode()).chatId(message.getChatId().toString()).replyMarkup(InlineKeyboardMarkup.builder().keyboard(buttons).build()).build());
+            buttons.add(Arrays.asList(InlineKeyboardButton.builder().text(QUESTION.getCode() + "Получить вопрос" + QUESTION.getCode()).callbackData("giveQuestion").build()));
+            execute(SendMessage.builder().text("Попробуем еще? " + NEXT.getCode()).chatId(message.getChatId().toString()).replyMarkup(InlineKeyboardMarkup.builder().keyboard(buttons).build()).build());
 
         }
     }
 
     @SneakyThrows
     private void handleMessage(Message message) {
+        if (message.getText().equals("/start")) {
 
-        List<List<InlineKeyboardButton>> buttons = getQuestionButton();
-        execute(SendMessage.builder().text(welcome).chatId(message.getChatId().toString()).replyMarkup(InlineKeyboardMarkup.builder().keyboard(buttons).build()).build());
+            List<List<InlineKeyboardButton>> buttons = getQuestionButton();
+            execute(SendMessage.builder().text(welcome).chatId(message.getChatId().toString()).replyMarkup(InlineKeyboardMarkup.builder().keyboard(buttons).build()).build());
+        }
+
     }
 
     private List<List<InlineKeyboardButton>> getQuestionButton() {

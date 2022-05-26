@@ -23,7 +23,7 @@ public class QuestionServiceImpl implements QuestionService {
     }
 
     public Questions randomQuestion() {
-        int idx = (int) (Math.random() * (6 - 1)) + 1;
+        int idx = (int) (Math.random() * (questionsRepository.findAll().size() - 1)) + 1;
         Questions questionPage = questionsRepository.findById(idx).get();
         return questionPage;
     }

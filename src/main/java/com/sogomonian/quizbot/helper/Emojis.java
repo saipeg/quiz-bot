@@ -8,7 +8,8 @@ package com.sogomonian.quizbot.helper;
 public enum Emojis {
     QUESTION(0x2753), CHECK(0x2705), BRAIN(0x1F393), //🎓
     CUP(0x1F3C6), //🏆
-    CURSOR(2194) //🏆
+    CURSOR(0x2194), //🏆
+    NEXT(0x27A1) //➡
     ;
 
     private Integer code;
