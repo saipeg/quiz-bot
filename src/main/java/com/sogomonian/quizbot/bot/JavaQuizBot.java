@@ -78,16 +78,22 @@ public class JavaQuizBot extends TelegramLongPollingBot {
         if (data.equals("giveQuestion")) {
             Questions questions = questionService.randomQuestion();
             answer = questions.getAnswer();
-            execute(SendMessage.builder().text(questions.getQuestion()).chatId(message.getChatId().toString()).build());
-            buttons.add(Arrays.asList(InlineKeyboardButton.builder().text("Проверить" + CHECK.getCode()).callbackData("giveAnswer").build()));
-            execute(EditMessageReplyMarkup.builder().chatId(message.getChatId().toString()).messageId(message.getMessageId()).replyMarkup(InlineKeyboardMarkup.builder().keyboard(buttons).build()).build());
+            buttons.add(Arrays.asList(InlineKeyboardButton.builder().text("Ответ" + CHECK.getCode()).callbackData("giveAnswer").build()));
+
+            execute(SendMessage.builder().text(questions.getQuestion()).chatId(message.getChatId().toString()).replyMarkup(InlineKeyboardMarkup.builder().keyboard(buttons).build()).build());
+//          buttons.add(Arrays.asList(InlineKeyboardButton.builder().text("Проверить" + CHECK.getCode()).callbackData("giveAnswer").build()));
+//            buttons.add(Arrays.asList(InlineKeyboardButton.builder().text("Ответ" + CHECK.getCode()).callbackData("giveAnswer").build()));
+//            execute(EditMessageReplyMarkup.builder().chatId(message.getChatId().toString()).messageId(message.getMessageId()).replyMarkup(InlineKeyboardMarkup.builder().keyboard(buttons).build()).build());
+//            execute(SendMessage.builder().text("Проверить" + CHECK.getCode()).chatId(message.getChatId().toString()).replyMarkup(InlineKeyboardMarkup.builder().keyboard(buttons).build()).build());
 
         }
 
         if (data.equals("giveAnswer")) {
-            execute(SendMessage.builder().text(answer).chatId(message.getChatId().toString()).build());
             buttons.add(Arrays.asList(InlineKeyboardButton.builder().text(QUESTION.getCode() + "Получить вопрос" + QUESTION.getCode()).callbackData("giveQuestion").build()));
-            execute(SendMessage.builder().text("Попробуем еще? " + NEXT.getCode()).chatId(message.getChatId().toString()).replyMarkup(InlineKeyboardMarkup.builder().keyboard(buttons).build()).build());
+
+            execute(SendMessage.builder().text(answer).chatId(message.getChatId().toString()).replyMarkup(InlineKeyboardMarkup.builder().keyboard(buttons).build()).build());
+//            buttons.add(Arrays.asList(InlineKeyboardButton.builder().text(QUESTION.getCode() + "Получить вопрос" + QUESTION.getCode()).callbackData("giveQuestion").build()));
+//            execute(SendMessage.builder().text("Попробуем еще?" + NEXT.getCode()).chatId(message.getChatId().toString()).replyMarkup(InlineKeyboardMarkup.builder().keyboard(buttons).build()).build());
 
         }
     }
@@ -98,6 +104,8 @@ public class JavaQuizBot extends TelegramLongPollingBot {
 
             List<List<InlineKeyboardButton>> buttons = getQuestionButton();
             execute(SendMessage.builder().text(welcome).chatId(message.getChatId().toString()).replyMarkup(InlineKeyboardMarkup.builder().keyboard(buttons).build()).build());
+        } else {
+            execute(SendMessage.builder().chatId(message.getChatId().toString()).text("Не мямли, нажми кнопку \"Получить вопрос\" или \"Ответ\"").build());
         }
 
     }
