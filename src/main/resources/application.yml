@@ -13,6 +13,6 @@ spring:
   datasource:
     hikari:
       schema: public
-    url: jdbc:postgresql://localhost:5432/quiz
+    url: jdbc:postgresql://localhost:5432/postgres
     username: postgres
-    password: postgres
+    password: 123

@@ -72,20 +72,39 @@ public class JavaQuizBot extends TelegramLongPollingBot {
     @SneakyThrows
     private void handleCallback(CallbackQuery callbackQuery) {
         Message message = callbackQuery.getMessage();
-        String data = callbackQuery.getData();
+        String userClick = callbackQuery.getData();
         List<List<InlineKeyboardButton>> buttons = new ArrayList<>();
 
-        if (data.equals("giveQuestion")) {
+        if (userClick.equals("giveQuestion")) {
+
             Questions questions = questionService.randomQuestion();
             answer = questions.getAnswer();
-            buttons.add(Arrays.asList(InlineKeyboardButton.builder().text("Ответ" + CHECK.getCode()).callbackData("giveAnswer").build()));
-            execute(SendMessage.builder().text(questions.getQuestion()).chatId(message.getChatId().toString()).replyMarkup(InlineKeyboardMarkup.builder().keyboard(buttons).build()).build());
+
+            buttons.add(List.of(InlineKeyboardButton.builder()
+                    .text("Ответ" + CHECK.getCode())
+                    .callbackData("giveAnswer").build()));
+
+            execute(
+                    SendMessage.builder()
+                            .text(questions.getQuestion())
+                            .chatId(message.getChatId().toString())
+                            .replyMarkup(InlineKeyboardMarkup.builder().keyboard(buttons).build())
+                            .build());
 
         }
 
-        if (data.equals("giveAnswer")) {
-            buttons.add(Arrays.asList(InlineKeyboardButton.builder().text(QUESTION.getCode() + "Получить вопрос" + QUESTION.getCode()).callbackData("giveQuestion").build()));
-            execute(SendMessage.builder().text(answer).chatId(message.getChatId().toString()).replyMarkup(InlineKeyboardMarkup.builder().keyboard(buttons).build()).build());
+        if (userClick.equals("giveAnswer")) {
+
+            buttons.add(List.of(InlineKeyboardButton.builder()
+                    .text(QUESTION.getCode() + "Получить вопрос" + QUESTION.getCode())
+                    .callbackData("giveQuestion").build()));
+
+            execute(
+                    SendMessage.builder()
+                            .text(answer)
+                            .chatId(message.getChatId().toString())
+                            .replyMarkup(InlineKeyboardMarkup.builder().keyboard(buttons).build())
+                            .build());
 
         }
     }
@@ -93,22 +112,35 @@ public class JavaQuizBot extends TelegramLongPollingBot {
     @SneakyThrows
     private void handleMessage(Message message) {
         String userName = message.getFrom().getFirstName();
+
         if (message.getText().equals("/start")) {
 
             List<List<InlineKeyboardButton>> buttons = getQuestionButton();
-            execute(SendMessage.builder().text(userName + welcome).chatId(message.getChatId().toString()).replyMarkup(InlineKeyboardMarkup.builder().keyboard(buttons).build()).build());
+            execute(
+                    SendMessage.builder()
+                            .text(userName + welcome)
+                            .chatId(message.getChatId().toString())
+                            .replyMarkup(InlineKeyboardMarkup.builder().keyboard(buttons).build())
+                            .build());
         } else {
-            execute(SendMessage.builder().chatId(message.getChatId().toString()).text(userName + ", не мямли, нажми кнопку \"Получить вопрос\" или \"Ответ\"").build());
+            execute(
+                    SendMessage.builder()
+                            .chatId(message.getChatId().toString())
+                            .text(userName + ", не мямли, нажми кнопку \"Получить вопрос\" или \"Ответ\"")
+                            .build());
         }
 
     }
 
     private List<List<InlineKeyboardButton>> getQuestionButton() {
         List<List<InlineKeyboardButton>> buttons = new ArrayList<>();
-        buttons.add(Arrays.asList(InlineKeyboardButton.builder().text(QUESTION.getCode() + "Получить вопрос" + QUESTION.getCode()).callbackData("giveQuestion").build()));
+
+        buttons.add(List.of(InlineKeyboardButton.builder()
+                .text(QUESTION.getCode() + "Получить вопрос" + QUESTION.getCode())
+                .callbackData("giveQuestion").build()));
+
         return buttons;
     }
-
 
     @Override
     public String getBotToken() {
