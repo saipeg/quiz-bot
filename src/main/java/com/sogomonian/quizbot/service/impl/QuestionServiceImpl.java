@@ -5,6 +5,8 @@ import com.sogomonian.quizbot.model.Questions;
 import com.sogomonian.quizbot.repository.QuestionsRepository;
 import com.sogomonian.quizbot.service.QuestionService;
 import lombok.RequiredArgsConstructor;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -16,6 +18,7 @@ public class QuestionServiceImpl implements QuestionService {
     @Autowired
     private QuestionsRepository questionsRepository;
 
+    private static final Logger LOGGER = LogManager.getLogger(QuestionServiceImpl.class);
     public static final String REPOSITORY_ANSWER_FAILED_MESSAGE = "К сожалению произошла ошибка, попробуйте позже";
 
     @Override
@@ -26,10 +29,11 @@ public class QuestionServiceImpl implements QuestionService {
     public Questions randomQuestion() {
         int allQuestionsSize = getAllQuestions().size();
 
-        if (allQuestionsSize > 1) {
+        if (allQuestionsSize < 1) {
             Questions questions = new Questions();
             questions.setAnswer(REPOSITORY_ANSWER_FAILED_MESSAGE);
             questions.setQuestion(REPOSITORY_ANSWER_FAILED_MESSAGE);
+            LOGGER.error("Repository not found");
             return questions;
         }
 
