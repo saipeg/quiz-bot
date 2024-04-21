@@ -1,12 +1,12 @@
 package com.sogomonian.quizbot.bot;
 
+import com.sogomonian.quizbot.config.Config;
 import com.sogomonian.quizbot.helper.Emojis;
 import com.sogomonian.quizbot.model.Questions;
 import com.sogomonian.quizbot.service.impl.QuestionServiceImpl;
 import lombok.SneakyThrows;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 import org.telegram.telegrambots.bots.TelegramLongPollingBot;
 import org.telegram.telegrambots.meta.TelegramBotsApi;
@@ -21,7 +21,6 @@ import org.telegram.telegrambots.updatesreceivers.DefaultBotSession;
 
 import javax.annotation.PostConstruct;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 
 import static com.sogomonian.quizbot.helper.Emojis.CHECK;
@@ -29,34 +28,17 @@ import static com.sogomonian.quizbot.helper.Emojis.QUESTION;
 
 @Component
 public class JavaQuizBot extends TelegramLongPollingBot {
-
-    String answer;
-
     static Logger logger = LogManager.getLogger(JavaQuizBot.class);
+
     private final QuestionServiceImpl questionService;
+    private final Config config;
+
+    private String answer;
     private Emojis emojis;
 
-    @Value("${bot.token}")
-    private String token;
-    @Value("${bot.name}")
-    private String username;
-    @Value("${bot.welcome}")
-    private String welcome;
-
-    public JavaQuizBot(QuestionServiceImpl questionService) {
+    public JavaQuizBot(QuestionServiceImpl questionService, Config config) {
         this.questionService = questionService;
-    }
-
-
-    @PostConstruct
-    public void init() {
-        try {
-            TelegramBotsApi telegramBotsApi = new TelegramBotsApi(DefaultBotSession.class);
-            telegramBotsApi.registerBot(this);
-            logger.info("Register bot");
-        } catch (TelegramApiException e) {
-            e.printStackTrace();
-        }
+        this.config = config;
     }
 
     @Override
@@ -118,7 +100,7 @@ public class JavaQuizBot extends TelegramLongPollingBot {
             List<List<InlineKeyboardButton>> buttons = getQuestionButton();
             execute(
                     SendMessage.builder()
-                            .text(userName + welcome)
+                            .text(userName + config.getWelcome())
                             .chatId(message.getChatId().toString())
                             .replyMarkup(InlineKeyboardMarkup.builder().keyboard(buttons).build())
                             .build());
@@ -142,14 +124,26 @@ public class JavaQuizBot extends TelegramLongPollingBot {
         return buttons;
     }
 
+    @PostConstruct
+    public void init() {
+        try {
+            TelegramBotsApi telegramBotsApi = new TelegramBotsApi(DefaultBotSession.class);
+            telegramBotsApi.registerBot(this);
+            logger.info("Register bot");
+        } catch (TelegramApiException e) {
+            e.printStackTrace();
+            logger.error("Error when tried register bot");
+        }
+    }
+
     @Override
     public String getBotToken() {
-        return token;
+        return config.getToken();
     }
 
     @Override
     public String getBotUsername() {
-        return username;
+        return config.getUsername();
     }
 }
 
