@@ -15,10 +15,11 @@ import java.util.List;
 @Service
 @RequiredArgsConstructor
 public class QuestionServiceImpl implements QuestionService {
-    private QuestionsRepository questionsRepository;
+    public static final String REPOSITORY_ANSWER_FAILED_MESSAGE = "К сожалению произошла ошибка, попробуйте позже";
 
     private static final Logger LOGGER = LogManager.getLogger(QuestionServiceImpl.class);
-    public static final String REPOSITORY_ANSWER_FAILED_MESSAGE = "К сожалению произошла ошибка, попробуйте позже";
+
+    private QuestionsRepository questionsRepository;
 
     @Autowired
     public QuestionServiceImpl(QuestionsRepository questionsRepository) {
@@ -43,6 +44,9 @@ public class QuestionServiceImpl implements QuestionService {
 
         int idx = (int) (Math.random() * (allQuestionsSize - 1)) + 1;
         return questionsRepository.findById(idx).get();
+//        Questions questions = questionsRepository.findById(idx).get();
+//        questions = questionsRepository.findById(idx).get();
+//        questions.setAnswer(); = questionsRepository.findById(idx).get();
 
     }
 }

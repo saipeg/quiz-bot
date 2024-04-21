@@ -53,42 +53,47 @@ public class JavaQuizBot extends TelegramLongPollingBot {
 
     @SneakyThrows
     private void handleCallback(CallbackQuery callbackQuery) {
-        Message message = callbackQuery.getMessage();
+        Long chatId = callbackQuery.getMessage().getChatId();
         String userClick = callbackQuery.getData();
         List<List<InlineKeyboardButton>> buttons = new ArrayList<>();
 
-        if (userClick.equals("giveQuestion")) {
-
-            Questions questions = questionService.randomQuestion();
-            answer = questions.getAnswer();
-
-            buttons.add(List.of(InlineKeyboardButton.builder()
-                    .text("Ответ" + CHECK.getCode())
-                    .callbackData("giveAnswer").build()));
-
-            execute(
-                    SendMessage.builder()
-                            .text(questions.getQuestion())
-                            .chatId(message.getChatId().toString())
-                            .replyMarkup(InlineKeyboardMarkup.builder().keyboard(buttons).build())
-                            .build());
-
+        switch (userClick) {
+            case "giveQuestion":
+                giveQuestion(chatId, buttons);
+                break;
+            case "giveAnswer":
+                giveAnswer(chatId, buttons);
+                break;
         }
+    }
 
-        if (userClick.equals("giveAnswer")) {
+    private void giveAnswer(Long chatId, List<List<InlineKeyboardButton>> buttons) throws TelegramApiException {
+        buttons.add(List.of(InlineKeyboardButton.builder()
+                .text(QUESTION.getCode() + "Получить вопрос" + QUESTION.getCode())
+                .callbackData("giveQuestion").build()));
 
-            buttons.add(List.of(InlineKeyboardButton.builder()
-                    .text(QUESTION.getCode() + "Получить вопрос" + QUESTION.getCode())
-                    .callbackData("giveQuestion").build()));
+        execute(
+                SendMessage.builder()
+                        .text(answer)
+                        .chatId(chatId.toString())
+                        .replyMarkup(InlineKeyboardMarkup.builder().keyboard(buttons).build())
+                        .build());
+    }
 
-            execute(
-                    SendMessage.builder()
-                            .text(answer)
-                            .chatId(message.getChatId().toString())
-                            .replyMarkup(InlineKeyboardMarkup.builder().keyboard(buttons).build())
-                            .build());
+    private void giveQuestion(Long chatId, List<List<InlineKeyboardButton>> buttons) throws TelegramApiException {
+        Questions questions = questionService.randomQuestion();
+        answer = questions.getAnswer();
 
-        }
+        buttons.add(List.of(InlineKeyboardButton.builder()
+                .text("Ответ" + CHECK.getCode())
+                .callbackData("giveAnswer").build()));
+
+        execute(
+                SendMessage.builder()
+                        .text(questions.getQuestion())
+                        .chatId(chatId.toString())
+                        .replyMarkup(InlineKeyboardMarkup.builder().keyboard(buttons).build())
+                        .build());
     }
 
     @SneakyThrows
