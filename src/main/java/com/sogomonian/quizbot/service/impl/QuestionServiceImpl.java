@@ -15,11 +15,15 @@ import java.util.List;
 @Service
 @RequiredArgsConstructor
 public class QuestionServiceImpl implements QuestionService {
-    @Autowired
     private QuestionsRepository questionsRepository;
 
     private static final Logger LOGGER = LogManager.getLogger(QuestionServiceImpl.class);
     public static final String REPOSITORY_ANSWER_FAILED_MESSAGE = "К сожалению произошла ошибка, попробуйте позже";
+
+    @Autowired
+    public QuestionServiceImpl(QuestionsRepository questionsRepository) {
+        this.questionsRepository = questionsRepository;
+    }
 
     @Override
     public List<Questions> getAllQuestions() {
