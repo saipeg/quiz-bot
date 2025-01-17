@@ -5,7 +5,7 @@ bot:
   \n 1. Жми: \"Получить вопрос\"
   \n 2. Попробуй ответить 
   \n 3. Проверь себя!"
-server.port: 8087
+server.port: 5432
 
 spring:
   datasource:

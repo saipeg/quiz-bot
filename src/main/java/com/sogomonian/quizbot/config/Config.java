@@ -7,7 +7,6 @@ import org.springframework.stereotype.Component;
 @Component
 @Data
 public class Config {
-
     @Value("${bot.token}")
     private String token;
     @Value("${bot.name}")

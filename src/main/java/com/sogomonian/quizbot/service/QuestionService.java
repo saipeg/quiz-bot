@@ -7,6 +7,7 @@ import java.awt.print.Pageable;
 import java.util.List;
 
 public interface QuestionService {
+    String REPOSITORY_ANSWER_FAILED_MESSAGE = "К сожалению произошла ошибка, попробуйте позже";
 
     List<Questions> getAllQuestions();
     Questions randomQuestion();

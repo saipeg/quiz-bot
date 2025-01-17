@@ -16,7 +16,6 @@ import java.util.List;
 @Service
 @RequiredArgsConstructor
 public class QuestionServiceImpl implements QuestionService {
-    public static final String REPOSITORY_ANSWER_FAILED_MESSAGE = "К сожалению произошла ошибка, попробуйте позже";
 
     private static final Logger LOGGER = LogManager.getLogger(QuestionServiceImpl.class);
 
@@ -47,7 +46,6 @@ public class QuestionServiceImpl implements QuestionService {
         if (allQuestionsSize <= 1) {
             Questions questions = new Questions();
             questions.setAnswer(REPOSITORY_ANSWER_FAILED_MESSAGE);
-            questions.setQuestion(REPOSITORY_ANSWER_FAILED_MESSAGE);
             LOGGER.error("Repository not found");
             return questions;
         }

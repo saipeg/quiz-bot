@@ -4,3 +4,10 @@ CREATE TABLE "questions"
     question TEXT default NULL,
     answer   TEXT default NULL
 );
+
+CREATE TABLE "kubernetes_questions"
+(
+    id       SERIAL PRIMARY KEY,
+    question TEXT default NULL,
+    answer   TEXT default NULL
+);
