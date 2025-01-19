@@ -54,6 +54,7 @@ public class JavaQuizBot extends TelegramLongPollingBot {
     @SneakyThrows
     private void handleCallback(CallbackQuery callbackQuery) {
         Long chatId = callbackQuery.getMessage().getChatId();
+        System.out.println("chat id: " + chatId);
         String userClick = callbackQuery.getData();
         List<List<InlineKeyboardButton>> buttons = new ArrayList<>();
 
@@ -81,7 +82,7 @@ public class JavaQuizBot extends TelegramLongPollingBot {
     }
 
     private void giveQuestion(Long chatId, List<List<InlineKeyboardButton>> buttons) throws TelegramApiException {
-        Questions questions = questionService.randomQuestion();
+        Questions questions = questionService.getRandomQuestion();
         answer = questions.getAnswer();
 
         buttons.add(List.of(InlineKeyboardButton.builder()

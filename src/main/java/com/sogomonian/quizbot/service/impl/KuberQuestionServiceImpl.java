@@ -16,7 +16,7 @@ public class KuberQuestionServiceImpl implements QuestionService {
     }
 
     @Override
-    public Questions randomQuestion() {
+    public Questions getRandomQuestion() {
         return null;
     }
 }
