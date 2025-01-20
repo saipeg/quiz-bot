@@ -7,6 +7,16 @@
         <mxCell id="liqB-MoZBLIA4MW6mtuY-1" value="Учеба" style="rounded=0;whiteSpace=wrap;html=1;" vertex="1" parent="1">
           <mxGeometry x="120" y="180" width="120" height="60" as="geometry" />
         </mxCell>
+        <mxCell id="liqB-MoZBLIA4MW6mtuY-10" value="" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;entryX=0.5;entryY=0;entryDx=0;entryDy=0;" edge="1" parent="1" source="liqB-MoZBLIA4MW6mtuY-2" target="liqB-MoZBLIA4MW6mtuY-1">
+          <mxGeometry relative="1" as="geometry">
+            <mxPoint x="240" y="200" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="liqB-MoZBLIA4MW6mtuY-12" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;entryX=0.5;entryY=0;entryDx=0;entryDy=0;" edge="1" parent="1" source="liqB-MoZBLIA4MW6mtuY-2" target="liqB-MoZBLIA4MW6mtuY-3">
+          <mxGeometry relative="1" as="geometry">
+            <mxPoint x="690" y="90" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
         <mxCell id="liqB-MoZBLIA4MW6mtuY-2" value="Цель" style="rounded=0;whiteSpace=wrap;html=1;" vertex="1" parent="1">
           <mxGeometry x="380" y="60" width="120" height="60" as="geometry" />
         </mxCell>
