@@ -3,7 +3,8 @@ package com.sogomonian.quizbot.bot;
 import com.sogomonian.quizbot.config.Config;
 import com.sogomonian.quizbot.helper.Emojis;
 import com.sogomonian.quizbot.model.Questions;
-import com.sogomonian.quizbot.service.impl.QuestionServiceImpl;
+import com.sogomonian.quizbot.model.User;
+import com.sogomonian.quizbot.service.impl.JavaQuestionServiceImpl;
 import lombok.SneakyThrows;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -30,13 +31,14 @@ import static com.sogomonian.quizbot.helper.Emojis.QUESTION;
 public class JavaQuizBot extends TelegramLongPollingBot {
     static Logger logger = LogManager.getLogger(JavaQuizBot.class);
 
-    private final QuestionServiceImpl questionService;
+    private final JavaQuestionServiceImpl questionService;
     private final Config config;
 
+    private User user;
     private String answer;
     private Emojis emojis;
 
-    public JavaQuizBot(QuestionServiceImpl questionService, Config config) {
+    public JavaQuizBot(JavaQuestionServiceImpl questionService, Config config) {
         this.questionService = questionService;
         this.config = config;
     }
@@ -54,14 +56,19 @@ public class JavaQuizBot extends TelegramLongPollingBot {
     @SneakyThrows
     private void handleCallback(CallbackQuery callbackQuery) {
         Long chatId = callbackQuery.getMessage().getChatId();
-        System.out.println("chat id: " + chatId);
+        System.out.println("chat id: " + chatId); //TODO chat id to final field
         String userClick = callbackQuery.getData();
         List<List<InlineKeyboardButton>> buttons = new ArrayList<>();
 
         switch (userClick) {
-            case "giveQuestion":
+            case "javaQuestion":
                 giveQuestion(chatId, buttons);
                 break;
+
+            case "kuberQuestion":
+                giveQuestion(chatId, buttons);
+                break;
+
             case "giveAnswer":
                 giveAnswer(chatId, buttons);
                 break;
@@ -101,22 +108,29 @@ public class JavaQuizBot extends TelegramLongPollingBot {
     private void handleMessage(Message message) {
         String userName = message.getFrom().getFirstName();
 
+        String chatId = message.getChatId().toString();
+        checkComeback(chatId);
+
         if (message.getText().equals("/start")) {
 
             List<List<InlineKeyboardButton>> buttons = getQuestionButton();
             execute(
                     SendMessage.builder()
                             .text(userName + config.getWelcome())
-                            .chatId(message.getChatId().toString())
+                            .chatId(chatId)
                             .replyMarkup(InlineKeyboardMarkup.builder().keyboard(buttons).build())
                             .build());
         } else {
             execute(
                     SendMessage.builder()
-                            .chatId(message.getChatId().toString())
+                            .chatId(chatId)
                             .text(userName + ", не мямли, нажми кнопку \"Получить вопрос\" или \"Ответ\"")
                             .build());
         }
+
+    }
+
+    private void checkComeback(String chatId) {
 
     }
 
@@ -124,8 +138,12 @@ public class JavaQuizBot extends TelegramLongPollingBot {
         List<List<InlineKeyboardButton>> buttons = new ArrayList<>();
 
         buttons.add(List.of(InlineKeyboardButton.builder()
-                .text(QUESTION.getCode() + "Получить вопрос" + QUESTION.getCode())
-                .callbackData("giveQuestion").build()));
+                .text(QUESTION.getCode() + "Java" + QUESTION.getCode())
+                .callbackData("javaQuestion").build()));
+
+        buttons.add(List.of(InlineKeyboardButton.builder()
+                .text(QUESTION.getCode() + "Kubernetes" + QUESTION.getCode())
+                .callbackData("kuberQuestion").build()));
 
         return buttons;
     }
@@ -150,6 +168,10 @@ public class JavaQuizBot extends TelegramLongPollingBot {
     @Override
     public String getBotUsername() {
         return config.getUsername();
+    }
+
+    public User setUser() {
+        return user;
     }
 }
 

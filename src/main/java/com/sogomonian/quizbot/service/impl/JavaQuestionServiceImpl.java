@@ -17,15 +17,15 @@ import java.util.Random;
 
 @Service
 @RequiredArgsConstructor
-public class QuestionServiceImpl implements QuestionService {
+public class JavaQuestionServiceImpl implements QuestionService {
 
-    private static final Logger LOGGER = LogManager.getLogger(QuestionServiceImpl.class);
+    private static final Logger LOGGER = LogManager.getLogger(JavaQuestionServiceImpl.class);
 
     private QuestionsRepository questionsRepository;
     private List<Questions> allQuestions;
 
     @Autowired
-    public QuestionServiceImpl(QuestionsRepository questionsRepository, List<Questions> allQuestions) {
+    public JavaQuestionServiceImpl(QuestionsRepository questionsRepository, List<Questions> allQuestions) {
         this.questionsRepository = questionsRepository;
         this.allQuestions = allQuestions;
     }
