@@ -82,7 +82,7 @@ public class JavaQuizBot extends TelegramLongPollingBot {
     private void giveAnswer(Long chatId, List<List<InlineKeyboardButton>> buttons) throws TelegramApiException {
         buttons.add(List.of(InlineKeyboardButton.builder()
                 .text(QUESTION.getCode() + "Получить вопрос" + QUESTION.getCode())
-                .callbackData("giveQuestion").build()));
+                .callbackData("javaQuestion").build()));
 
         execute(
                 SendMessage.builder()
