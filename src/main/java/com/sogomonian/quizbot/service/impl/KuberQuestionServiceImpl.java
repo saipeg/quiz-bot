@@ -1,61 +1,64 @@
 package com.sogomonian.quizbot.service.impl;
 
 import com.sogomonian.quizbot.model.KubernetesQuestions;
-import com.sogomonian.quizbot.model.Questions;
 import com.sogomonian.quizbot.repository.KubernetesRepository;
 import com.sogomonian.quizbot.service.QuestionService;
-import com.sogomonian.quizbot.service.UserService;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import lombok.val;
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
 import org.springframework.stereotype.Service;
 
-import java.util.ArrayList;
+import javax.annotation.PostConstruct;
+import java.util.Collections;
 import java.util.List;
 import java.util.Random;
 
+@Slf4j
 @Service
 @RequiredArgsConstructor
-public class KuberQuestionServiceImpl implements QuestionService{
+public class KuberQuestionServiceImpl implements QuestionService<KubernetesQuestions> {
 
-    private static final Logger LOGGER = LogManager.getLogger(KuberQuestionServiceImpl.class);
+    private final KubernetesRepository kubernetesRepository;
+    private List<KubernetesQuestions> allQuestions;
 
-    private KubernetesRepository kubernetesRepository;
-    private List<Questions> allQuestions;
-
-
-    public List<Questions> getAllQuestions() {
-        return null;
+    @PostConstruct
+    public void init() {
+        allQuestions = getAllQuestions();
     }
 
     public KubernetesQuestions getRandomQuestion() {
-
-        allQuestions = getAllKubernetosQuestions();
-
-        if (allQuestions.size() > 0) {
+        if (!allQuestions.isEmpty()) {
             System.out.println("=========" + allQuestions.size());
             Random r = new Random();
             int questionId = r.nextInt(allQuestions.size());
             val question = allQuestions.get(questionId);
-            allQuestions.remove(questionId);
+//            allQuestions.remove(questionId);
+//            return new Response(question, questionId);
             return question;
         } else {
             return null;
         }
-
     }
 
-    public List<Questions> getAllKubernetosQuestions() {
-        List<Questions> kubernetesQuestions;
+    public List<KubernetesQuestions> getAllQuestions() {
+        List<KubernetesQuestions> kubernetesQuestions;
         try {
             kubernetesQuestions = kubernetesRepository.findAll();
         } catch (Exception e) {
             e.printStackTrace();
-            LOGGER.error("Repository not found");
-            return new ArrayList<>();
+            log.error("Repository not found");
+            return Collections.emptyList();
+        }
+        return kubernetesQuestions;
+    }
+
+    static class Response {
+        public Response(KubernetesQuestions kubernetesQuestions, Integer id) {
+            this.kubernetesQuestions = kubernetesQuestions;
+            this.id = id;
         }
 
-        return kubernetesQuestions;
+        KubernetesQuestions kubernetesQuestions;
+        Integer id;
     }
 }
