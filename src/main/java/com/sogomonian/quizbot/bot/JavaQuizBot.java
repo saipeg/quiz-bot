@@ -24,6 +24,7 @@ import org.telegram.telegrambots.updatesreceivers.DefaultBotSession;
 import javax.annotation.PostConstruct;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 import static com.sogomonian.quizbot.helper.Emojis.CHECK;
 import static com.sogomonian.quizbot.helper.Emojis.QUESTION;
@@ -135,19 +136,17 @@ public class JavaQuizBot extends TelegramLongPollingBot {
 
     private void checkComeback(String chatId) {
         List<User> allUsers = userService.getAllUsers();
-        if (allUsers.isEmpty()) {
-            System.out.println("ТАКОЙ ЧАТ АЙДИ НЕ НАЙДЕН: " + chatId);
-            userService.addNewChatIdToBase(chatId);
-        }
 
-        for (User user : allUsers) {
-            if (user.getChatId().contains(chatId)) {
-                System.out.println("ТАКОЙ ЧАТ АЙДИ ЕСТЬ: " + chatId);
-            } else {
-                System.out.println("ТАКОЙ ЧАТ АЙДИ НЕ НАЙДЕН: " + chatId);
-                userService.addNewChatIdToBase(chatId);
-            }
-        }
+        allUsers.stream()
+                .filter(user -> user.getChatId().equals(chatId))
+                .findAny()
+                .ifPresentOrElse(
+                        id -> System.out.println("ТАКОЙ ЧАТ АЙДИ ЕСТЬ: " + chatId),
+                        () -> {
+                            System.out.println("ТАКОЙ ЧАТ АЙДИ НЕ НАЙДЕН: " + chatId);
+                            userService.addNewChatIdToBase(chatId);
+                        }
+                );
 
     }
 
