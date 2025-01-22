@@ -6,6 +6,7 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 import javax.persistence.*;
+import java.time.LocalDateTime;
 
 @AllArgsConstructor
 @Getter
@@ -16,14 +17,14 @@ import javax.persistence.*;
 public class User {
     @Id
     @Column(name = "id")
-    @GeneratedValue(strategy = GenerationType.AUTO)
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int id;
 
-    @Column(name = "chatId")
+    @Column(name = "chatid")
     private String chatId;
 
     @Column(name = "last_time")
-    private String lastTime;
+    private LocalDateTime lastTime;
 
     @Override
     public String toString() {

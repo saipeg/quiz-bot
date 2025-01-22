@@ -1,5 +1,5 @@
 CREATE TABLE "user" (
                         id SERIAL PRIMARY KEY,
-                        chatId VARCHAR(255),
+                        chatId VARCHAR,
                         last_time TIMESTAMP
 );

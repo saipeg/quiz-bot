@@ -10,6 +10,7 @@ import org.apache.logging.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -30,15 +31,22 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public List<User> getAllUsers() {
-        List<User> users;
         try {
-            userRepository.getById()
+            allUsers = userRepository.findAll();
         } catch (Exception e) {
             e.printStackTrace();
             LOGGER.error("Repository not found");
             return new ArrayList<>();
         }
 
-        return users;
+        return allUsers;
+    }
+
+    public void addNewChatIdToBase(String chatId) {
+        User user = new User();
+        user.setChatId(chatId);
+        user.setLastTime(LocalDateTime.now());
+        userRepository.save(user);
+        LOGGER.info("Пользователь: " + chatId + " успешно сохранен");
     }
 }

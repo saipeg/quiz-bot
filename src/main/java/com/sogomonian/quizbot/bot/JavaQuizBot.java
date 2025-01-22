@@ -5,6 +5,7 @@ import com.sogomonian.quizbot.helper.Emojis;
 import com.sogomonian.quizbot.model.Questions;
 import com.sogomonian.quizbot.model.User;
 import com.sogomonian.quizbot.service.impl.JavaQuestionServiceImpl;
+import com.sogomonian.quizbot.service.impl.UserServiceImpl;
 import lombok.SneakyThrows;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -32,14 +33,16 @@ public class JavaQuizBot extends TelegramLongPollingBot {
     static Logger logger = LogManager.getLogger(JavaQuizBot.class);
 
     private final JavaQuestionServiceImpl questionService;
+    private final UserServiceImpl userService;
     private final Config config;
 
     private User user;
     private String answer;
     private Emojis emojis;
 
-    public JavaQuizBot(JavaQuestionServiceImpl questionService, Config config) {
+    public JavaQuizBot(JavaQuestionServiceImpl questionService, UserServiceImpl userService, Config config) {
         this.questionService = questionService;
+        this.userService = userService;
         this.config = config;
     }
 
@@ -131,6 +134,20 @@ public class JavaQuizBot extends TelegramLongPollingBot {
     }
 
     private void checkComeback(String chatId) {
+        List<User> allUsers = userService.getAllUsers();
+        if (allUsers.isEmpty()) {
+            System.out.println("ТАКОЙ ЧАТ АЙДИ НЕ НАЙДЕН: " + chatId);
+            userService.addNewChatIdToBase(chatId);
+        }
+
+        for (User user : allUsers) {
+            if (user.getChatId().contains(chatId)) {
+                System.out.println("ТАКОЙ ЧАТ АЙДИ ЕСТЬ: " + chatId);
+            } else {
+                System.out.println("ТАКОЙ ЧАТ АЙДИ НЕ НАЙДЕН: " + chatId);
+                userService.addNewChatIdToBase(chatId);
+            }
+        }
 
     }
 
