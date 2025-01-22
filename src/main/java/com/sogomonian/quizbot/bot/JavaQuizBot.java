@@ -24,7 +24,6 @@ import org.telegram.telegrambots.updatesreceivers.DefaultBotSession;
 import javax.annotation.PostConstruct;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.stream.Collectors;
 
 import static com.sogomonian.quizbot.helper.Emojis.CHECK;
 import static com.sogomonian.quizbot.helper.Emojis.QUESTION;
@@ -70,7 +69,7 @@ public class JavaQuizBot extends TelegramLongPollingBot {
                 break;
 
             case "kuberQuestion":
-                giveQuestion(chatId, buttons);
+                giveKuberQuestion(chatId, buttons);
                 break;
 
             case "giveAnswer":
