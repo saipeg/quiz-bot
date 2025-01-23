@@ -13,7 +13,7 @@ import javax.persistence.*;
 @Entity
 @NoArgsConstructor
 @Table(schema = "public",name = "kubernetes_questions")
-public class KubernetesQuestions extends Questions {
+public class KubernetesQuestions {
     @Id
     @Column(name = "id")
     @GeneratedValue(strategy = GenerationType.AUTO)

@@ -2,9 +2,11 @@ package com.sogomonian.quizbot.bot;
 
 import com.sogomonian.quizbot.config.Config;
 import com.sogomonian.quizbot.helper.Emojis;
+import com.sogomonian.quizbot.model.KubernetesQuestions;
 import com.sogomonian.quizbot.model.Questions;
 import com.sogomonian.quizbot.model.User;
 import com.sogomonian.quizbot.service.impl.JavaQuestionServiceImpl;
+import com.sogomonian.quizbot.service.impl.KuberQuestionServiceImpl;
 import com.sogomonian.quizbot.service.impl.UserServiceImpl;
 import lombok.SneakyThrows;
 import org.apache.logging.log4j.LogManager;
@@ -33,6 +35,7 @@ public class JavaQuizBot extends TelegramLongPollingBot {
     static Logger logger = LogManager.getLogger(JavaQuizBot.class);
 
     private final JavaQuestionServiceImpl questionService;
+    private final KuberQuestionServiceImpl kuberQuestionService;
     private final UserServiceImpl userService;
     private final Config config;
 
@@ -40,8 +43,9 @@ public class JavaQuizBot extends TelegramLongPollingBot {
     private String answer;
     private Emojis emojis;
 
-    public JavaQuizBot(JavaQuestionServiceImpl questionService, UserServiceImpl userService, Config config) {
+    public JavaQuizBot(JavaQuestionServiceImpl questionService, KuberQuestionServiceImpl kuberQuestiomService, UserServiceImpl userService, Config config) {
         this.questionService = questionService;
+        this.kuberQuestionService = kuberQuestiomService;
         this.userService = userService;
         this.config = config;
     }
@@ -75,6 +79,10 @@ public class JavaQuizBot extends TelegramLongPollingBot {
             case "giveAnswer":
                 giveAnswer(chatId, buttons);
                 break;
+
+            case "giveKuberAnswer":
+                giveKuberAnswer(chatId, buttons);
+                break;
         }
     }
 
@@ -106,6 +114,37 @@ public class JavaQuizBot extends TelegramLongPollingBot {
                         .replyMarkup(InlineKeyboardMarkup.builder().keyboard(buttons).build())
                         .build());
     }
+
+    private void giveKuberQuestion(Long chatId, List<List<InlineKeyboardButton>> buttons) throws TelegramApiException {
+        KubernetesQuestions questions = kuberQuestionService.getRandomQuestion();
+        answer = questions.getAnswer();
+
+        buttons.add(List.of(InlineKeyboardButton.builder()
+                .text("Ответ" + CHECK.getCode())
+                .callbackData("giveKuberAnswer").build()));
+
+        execute(
+                SendMessage.builder()
+                        .text(questions.getQuestion())
+                        .chatId(chatId.toString())
+                        .replyMarkup(InlineKeyboardMarkup.builder().keyboard(buttons).build())
+                        .build());
+    }
+
+    private void giveKuberAnswer(Long chatId, List<List<InlineKeyboardButton>> buttons) throws TelegramApiException {
+        buttons.add(List.of(InlineKeyboardButton.builder()
+                .text(QUESTION.getCode() + "Получить вопрос" + QUESTION.getCode())
+                .callbackData("kuberQuestion").build()));
+
+        execute(
+                SendMessage.builder()
+                        .text(answer)
+                        .chatId(chatId.toString())
+                        .replyMarkup(InlineKeyboardMarkup.builder().keyboard(buttons).build())
+                        .build());
+    }
+
+
 
     @SneakyThrows
     private void handleMessage(Message message) {
