@@ -9,8 +9,7 @@ import com.sogomonian.quizbot.service.impl.JavaQuestionServiceImpl;
 import com.sogomonian.quizbot.service.impl.KuberQuestionServiceImpl;
 import com.sogomonian.quizbot.service.impl.UserServiceImpl;
 import lombok.SneakyThrows;
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
+import lombok.extern.log4j.Log4j2;
 import org.springframework.stereotype.Component;
 import org.telegram.telegrambots.bots.TelegramLongPollingBot;
 import org.telegram.telegrambots.meta.TelegramBotsApi;
@@ -30,9 +29,9 @@ import java.util.List;
 import static com.sogomonian.quizbot.helper.Emojis.CHECK;
 import static com.sogomonian.quizbot.helper.Emojis.QUESTION;
 
+@Log4j2
 @Component
 public class JavaQuizBot extends TelegramLongPollingBot {
-    static Logger logger = LogManager.getLogger(JavaQuizBot.class);
 
     private final JavaQuestionServiceImpl questionService;
     private final KuberQuestionServiceImpl kuberQuestionService;
@@ -207,10 +206,10 @@ public class JavaQuizBot extends TelegramLongPollingBot {
         try {
             TelegramBotsApi telegramBotsApi = new TelegramBotsApi(DefaultBotSession.class);
             telegramBotsApi.registerBot(this);
-            logger.info("Register bot");
+            log.info("Register bot");
         } catch (TelegramApiException e) {
             e.printStackTrace();
-            logger.error("Error when tried register bot");
+            log.error("Error when tried register bot");
         }
     }
 

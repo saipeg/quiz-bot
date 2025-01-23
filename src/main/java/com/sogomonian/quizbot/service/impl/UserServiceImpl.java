@@ -5,8 +5,7 @@ import com.sogomonian.quizbot.model.User;
 import com.sogomonian.quizbot.repository.UserRepository;
 import com.sogomonian.quizbot.service.UserService;
 import lombok.RequiredArgsConstructor;
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
+import lombok.extern.log4j.Log4j2;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -14,11 +13,10 @@ import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
+@Log4j2
 @Service
 @RequiredArgsConstructor
 public class UserServiceImpl implements UserService {
-
-    private static final Logger LOGGER = LogManager.getLogger(UserServiceImpl.class);
 
     private UserRepository userRepository;
     private List<User> allUsers;
@@ -35,7 +33,7 @@ public class UserServiceImpl implements UserService {
             allUsers = userRepository.findAll();
         } catch (Exception e) {
             e.printStackTrace();
-            LOGGER.error("Repository not found");
+            log.error("Repository not found");
             return new ArrayList<>();
         }
 
@@ -47,6 +45,6 @@ public class UserServiceImpl implements UserService {
         user.setChatId(chatId);
         user.setLastTime(LocalDateTime.now());
         userRepository.save(user);
-        LOGGER.info("Пользователь: " + chatId + " успешно сохранен");
+        log.info("Пользователь: " + chatId + " успешно сохранен");
     }
 }

@@ -9,9 +9,7 @@ import lombok.val;
 import org.springframework.stereotype.Service;
 
 import javax.annotation.PostConstruct;
-import java.util.Collections;
-import java.util.List;
-import java.util.Random;
+import java.util.*;
 
 @Slf4j
 @Service
@@ -27,6 +25,7 @@ public class KuberQuestionServiceImpl implements QuestionService<KubernetesQuest
     }
 
     public KubernetesQuestions getRandomQuestion() {
+
         if (!allQuestions.isEmpty()) {
             System.out.println("=========" + allQuestions.size());
             Random r = new Random();

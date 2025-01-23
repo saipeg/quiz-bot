@@ -5,9 +5,8 @@ import com.sogomonian.quizbot.model.Questions;
 import com.sogomonian.quizbot.repository.QuestionsRepository;
 import com.sogomonian.quizbot.service.QuestionService;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.log4j.Log4j2;
 import lombok.val;
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -15,11 +14,10 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
 
+@Log4j2
 @Service
 @RequiredArgsConstructor
 public class JavaQuestionServiceImpl implements QuestionService {
-
-    private static final Logger LOGGER = LogManager.getLogger(JavaQuestionServiceImpl.class);
 
     private QuestionsRepository questionsRepository;
     private List<Questions> allQuestions;
@@ -54,7 +52,7 @@ public class JavaQuestionServiceImpl implements QuestionService {
             questions = questionsRepository.findAll();
         } catch (Exception e) {
             e.printStackTrace();
-            LOGGER.error("Repository not found");
+            log.error("Repository not found");
             return new ArrayList<>();
         }
 
