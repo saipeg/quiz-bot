@@ -102,12 +102,8 @@ public class JavaQuizBot extends TelegramLongPollingBot {
 
         Questions questions = questionService.getRandomQuestionFor(chatId);
         if (questions == null) {
-            execute(
-                    SendMessage.builder()
-                            .text("Ты ответил на все вопросы раздела Java. Жми /start и выбери другую тему")
-                            .chatId(chatId.toString())
-                            .replyMarkup(InlineKeyboardMarkup.builder().keyboard(buttons).build())
-                            .build());
+            String message = "Ты ответил на все вопросы раздела Java. Жми /start и выбери другую тему";
+            execute(buildMessageToSend(chatId, buttons, message));
             return;
         }
         answer = questions.getAnswer();
@@ -116,12 +112,17 @@ public class JavaQuizBot extends TelegramLongPollingBot {
                 .text("Ответ" + CHECK.getCode())
                 .callbackData("giveJavaAnswer").build()));
 
-        execute(
-                SendMessage.builder()
-                        .text(questions.getQuestion())
-                        .chatId(chatId.toString())
-                        .replyMarkup(InlineKeyboardMarkup.builder().keyboard(buttons).build())
-                        .build());
+        String message = questions.getQuestion();
+
+        execute(buildMessageToSend(chatId, buttons, message));
+    }
+
+    private SendMessage buildMessageToSend(Long chatId, List<List<InlineKeyboardButton>> buttons, String message) {
+        return SendMessage.builder()
+                .text(message)
+                .chatId(chatId.toString())
+                .replyMarkup(InlineKeyboardMarkup.builder().keyboard(buttons).build())
+                .build();
     }
 
     private void giveKuberQuestion(Long chatId) throws TelegramApiException {
