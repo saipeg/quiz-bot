@@ -11,6 +11,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Lazy;
 import org.springframework.stereotype.Service;
 
+import javax.annotation.PostConstruct;
 import java.util.*;
 
 @Log4j2
@@ -27,6 +28,11 @@ public class JavaQuestionServiceImpl implements QuestionService {
         this.questionsRepository = questionsRepository;
         this.allQuestions = allQuestions;
         this.userServiceImpl = userServiceImpl;
+    }
+
+    @PostConstruct
+    public void init() {
+        allQuestions = getAllQuestions();
     }
 
     public Questions getRandomQuestionFor(Long chatId) {
