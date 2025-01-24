@@ -26,8 +26,7 @@ import javax.annotation.PostConstruct;
 import java.util.ArrayList;
 import java.util.List;
 
-import static com.sogomonian.quizbot.helper.Emojis.CHECK;
-import static com.sogomonian.quizbot.helper.Emojis.QUESTION;
+import static com.sogomonian.quizbot.helper.Emojis.*;
 
 @Log4j2
 @Component
@@ -63,30 +62,31 @@ public class JavaQuizBot extends TelegramLongPollingBot {
     private void handleCallback(CallbackQuery callbackQuery) {
         Long chatId = callbackQuery.getMessage().getChatId();
         String userClick = callbackQuery.getData();
-        List<List<InlineKeyboardButton>> buttons = new ArrayList<>();
 
         switch (userClick) {
             case "javaQuestion":
-                giveJavaQuestion(chatId, buttons);
+                giveJavaQuestion(chatId);
                 break;
 
             case "kuberQuestion":
-                giveKuberQuestion(chatId, buttons);
+                giveKuberQuestion(chatId);
                 break;
 
             case "giveJavaAnswer":
-                giveJavaAnswer(chatId, buttons);
+                giveJavaAnswer(chatId);
                 break;
 
             case "giveKuberAnswer":
-                giveKuberAnswer(chatId, buttons);
+                giveKuberAnswer(chatId);
                 break;
         }
     }
 
-    private void giveJavaAnswer(Long chatId, List<List<InlineKeyboardButton>> buttons) throws TelegramApiException {
+    private void giveJavaAnswer(Long chatId) throws TelegramApiException {
+        List<List<InlineKeyboardButton>> buttons = new ArrayList<>();
+
         buttons.add(List.of(InlineKeyboardButton.builder()
-                .text(QUESTION.getCode() + "Получить вопрос" + QUESTION.getCode())
+                .text("Получить вопрос" + QUESTION.getCode())
                 .callbackData("javaQuestion").build()));
 
         execute(
@@ -97,7 +97,9 @@ public class JavaQuizBot extends TelegramLongPollingBot {
                         .build());
     }
 
-    private void giveJavaQuestion(Long chatId, List<List<InlineKeyboardButton>> buttons) throws TelegramApiException {
+    private void giveJavaQuestion(Long chatId) throws TelegramApiException {
+        List<List<InlineKeyboardButton>> buttons = new ArrayList<>();
+
         Questions questions = questionService.getRandomQuestionFor(chatId);
         if (questions == null) {
             execute(
@@ -122,7 +124,9 @@ public class JavaQuizBot extends TelegramLongPollingBot {
                         .build());
     }
 
-    private void giveKuberQuestion(Long chatId, List<List<InlineKeyboardButton>> buttons) throws TelegramApiException {
+    private void giveKuberQuestion(Long chatId) throws TelegramApiException {
+        List<List<InlineKeyboardButton>> buttons = new ArrayList<>();
+
         KubernetesQuestions questions = kuberQuestionService.getRandomQuestionFor(chatId);
 
         if (questions == null) {
@@ -149,9 +153,11 @@ public class JavaQuizBot extends TelegramLongPollingBot {
                         .build());
     }
 
-    private void giveKuberAnswer(Long chatId, List<List<InlineKeyboardButton>> buttons) throws TelegramApiException {
+    private void giveKuberAnswer(Long chatId) throws TelegramApiException {
+        List<List<InlineKeyboardButton>> buttons = new ArrayList<>();
+
         buttons.add(List.of(InlineKeyboardButton.builder()
-                .text(QUESTION.getCode() + "Получить вопрос" + QUESTION.getCode())
+                .text("Получить вопрос" + QUESTION.getCode())
                 .callbackData("kuberQuestion").build()));
 
         execute(
@@ -211,11 +217,11 @@ public class JavaQuizBot extends TelegramLongPollingBot {
         List<List<InlineKeyboardButton>> buttons = new ArrayList<>();
 
         buttons.add(List.of(InlineKeyboardButton.builder()
-                .text(QUESTION.getCode() + "Java" + QUESTION.getCode())
+                .text("Java " + JAVA.getCode())
                 .callbackData("javaQuestion").build()));
 
         buttons.add(List.of(InlineKeyboardButton.builder()
-                .text(QUESTION.getCode() + "Kubernetes" + QUESTION.getCode())
+                .text("Kubernetes " + KUBER.getCode())
                 .callbackData("kuberQuestion").build()));
 
         return buttons;
