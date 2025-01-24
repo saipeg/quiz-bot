@@ -8,11 +8,10 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j2;
 import lombok.val;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.Lazy;
 import org.springframework.stereotype.Service;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Random;
+import java.util.*;
 
 @Log4j2
 @Service
@@ -21,25 +20,30 @@ public class JavaQuestionServiceImpl implements QuestionService {
 
     private QuestionsRepository questionsRepository;
     private List<Questions> allQuestions;
+    private UserServiceImpl userServiceImpl;
 
     @Autowired
-    public JavaQuestionServiceImpl(QuestionsRepository questionsRepository, List<Questions> allQuestions) {
+    public JavaQuestionServiceImpl(QuestionsRepository questionsRepository, List<Questions> allQuestions, @Lazy UserServiceImpl userServiceImpl) {
         this.questionsRepository = questionsRepository;
         this.allQuestions = allQuestions;
+        this.userServiceImpl = userServiceImpl;
     }
 
-    public Questions getRandomQuestion() {
-        allQuestions = getAllQuestions();
+    public Questions getRandomQuestionFor(Long chatId) {
+
+        Map<String, Integer> topicsAndLastQuestions = userServiceImpl.getVacantQuestions().get(chatId);
+        Integer lastQuestions = topicsAndLastQuestions.get("java");
 
 
-        if (allQuestions.size() > 0) {
-            System.out.println("=========" + allQuestions.size());
-            Random r = new Random();
-            int questionId = r.nextInt(allQuestions.size());
-            val question = allQuestions.get(questionId);
-            allQuestions.remove(questionId);
+        if (lastQuestions > 0) {
+            val question = allQuestions.get(lastQuestions - 1);
+            lastQuestions -= 1;
+            Map<String, Integer> questions = new HashMap<>();
+            questions.put("java", lastQuestions);
+            userServiceImpl.getVacantQuestions().put(chatId, questions);
             return question;
         } else {
+            System.out.println("      ВОПРОСЫ ЗАКОНЧМИЛИСЬ    ");
             return null;
         }
 

@@ -6,6 +6,8 @@ import com.sogomonian.quizbot.service.QuestionService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import lombok.val;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.Lazy;
 import org.springframework.stereotype.Service;
 
 import javax.annotation.PostConstruct;
@@ -18,23 +20,35 @@ public class KuberQuestionServiceImpl implements QuestionService<KubernetesQuest
 
     private final KubernetesRepository kubernetesRepository;
     private List<KubernetesQuestions> allQuestions;
+    private UserServiceImpl userService;
+
+    @Autowired
+    public KuberQuestionServiceImpl(KubernetesRepository kubernetesRepository, List<KubernetesQuestions> allQuestions, @Lazy UserServiceImpl userService) {
+        this.kubernetesRepository = kubernetesRepository;
+        this.allQuestions = allQuestions;
+        this.userService = userService;
+    }
 
     @PostConstruct
     public void init() {
         allQuestions = getAllQuestions();
     }
 
-    public KubernetesQuestions getRandomQuestion() {
+    public KubernetesQuestions getRandomQuestionFor(Long chatId) {
 
-        if (!allQuestions.isEmpty()) {
-            System.out.println("=========" + allQuestions.size());
-            Random r = new Random();
-            int questionId = r.nextInt(allQuestions.size());
-            val question = allQuestions.get(questionId);
-//            allQuestions.remove(questionId);
-//            return new Response(question, questionId);
+        Map<String, Integer> topicsAndLastQuestions = userService.getVacantQuestions().get(chatId);
+        Integer lastQuestions = topicsAndLastQuestions.get("kuber");
+
+
+        if (lastQuestions > 0) {
+            val question = allQuestions.get(lastQuestions - 1);
+            lastQuestions -= 1;
+            Map<String, Integer> questions = new HashMap<>();
+            questions.put("kuber", lastQuestions);
+            userService.getVacantQuestions().put(chatId, questions);
             return question;
         } else {
+            System.out.println("      ВОПРОСЫ ЗАКОНЧМИЛИСЬ    ");
             return null;
         }
     }

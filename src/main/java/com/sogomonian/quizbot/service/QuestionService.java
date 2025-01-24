@@ -7,6 +7,6 @@ public interface QuestionService<Q> {
 
     List<Q> getAllQuestions();
 
-    Q getRandomQuestion();
+    Q getRandomQuestionFor(Long chatId);
 
 }

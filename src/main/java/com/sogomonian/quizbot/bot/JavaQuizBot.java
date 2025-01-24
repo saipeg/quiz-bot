@@ -62,7 +62,6 @@ public class JavaQuizBot extends TelegramLongPollingBot {
     @SneakyThrows
     private void handleCallback(CallbackQuery callbackQuery) {
         Long chatId = callbackQuery.getMessage().getChatId();
-        System.out.println("chat id: " + chatId); //TODO chat id to final field
         String userClick = callbackQuery.getData();
         List<List<InlineKeyboardButton>> buttons = new ArrayList<>();
 
@@ -99,7 +98,16 @@ public class JavaQuizBot extends TelegramLongPollingBot {
     }
 
     private void giveQuestion(Long chatId, List<List<InlineKeyboardButton>> buttons) throws TelegramApiException {
-        Questions questions = questionService.getRandomQuestion();
+        Questions questions = questionService.getRandomQuestionFor(chatId);
+        if (questions == null) {
+            execute(
+                    SendMessage.builder()
+                            .text("Ты ответил на все вопросы раздела Java. Жми /start и выбери другую тему")
+                            .chatId(chatId.toString())
+                            .replyMarkup(InlineKeyboardMarkup.builder().keyboard(buttons).build())
+                            .build());
+            return;
+        }
         answer = questions.getAnswer();
 
         buttons.add(List.of(InlineKeyboardButton.builder()
@@ -115,7 +123,18 @@ public class JavaQuizBot extends TelegramLongPollingBot {
     }
 
     private void giveKuberQuestion(Long chatId, List<List<InlineKeyboardButton>> buttons) throws TelegramApiException {
-        KubernetesQuestions questions = kuberQuestionService.getRandomQuestion();
+        KubernetesQuestions questions = kuberQuestionService.getRandomQuestionFor(chatId);
+
+        if (questions == null) {
+            execute(
+                    SendMessage.builder()
+                            .text("Ты ответил на все вопросы раздела Kubernetes. Жми /start и выбери другую тему")
+                            .chatId(chatId.toString())
+                            .replyMarkup(InlineKeyboardMarkup.builder().keyboard(buttons).build())
+                            .build());
+            return;
+        }
+
         answer = questions.getAnswer();
 
         buttons.add(List.of(InlineKeyboardButton.builder()
@@ -153,6 +172,7 @@ public class JavaQuizBot extends TelegramLongPollingBot {
         checkComeback(chatId);
 
         if (message.getText().equals("/start")) {
+            userService.addQuestionsForClient(Long.parseLong(chatId));
 
             List<List<InlineKeyboardButton>> buttons = getQuestionButton();
             execute(
