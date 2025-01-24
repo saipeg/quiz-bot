@@ -42,9 +42,9 @@ public class JavaQuizBot extends TelegramLongPollingBot {
     private String answer;
     private Emojis emojis;
 
-    public JavaQuizBot(JavaQuestionServiceImpl questionService, KuberQuestionServiceImpl kuberQuestiomService, UserServiceImpl userService, Config config) {
+    public JavaQuizBot(JavaQuestionServiceImpl questionService, KuberQuestionServiceImpl kuberQuestionService, UserServiceImpl userService, Config config) {
         this.questionService = questionService;
-        this.kuberQuestionService = kuberQuestiomService;
+        this.kuberQuestionService = kuberQuestionService;
         this.userService = userService;
         this.config = config;
     }
@@ -67,15 +67,15 @@ public class JavaQuizBot extends TelegramLongPollingBot {
 
         switch (userClick) {
             case "javaQuestion":
-                giveQuestion(chatId, buttons);
+                giveJavaQuestion(chatId, buttons);
                 break;
 
             case "kuberQuestion":
                 giveKuberQuestion(chatId, buttons);
                 break;
 
-            case "giveAnswer":
-                giveAnswer(chatId, buttons);
+            case "giveJavaAnswer":
+                giveJavaAnswer(chatId, buttons);
                 break;
 
             case "giveKuberAnswer":
@@ -84,7 +84,7 @@ public class JavaQuizBot extends TelegramLongPollingBot {
         }
     }
 
-    private void giveAnswer(Long chatId, List<List<InlineKeyboardButton>> buttons) throws TelegramApiException {
+    private void giveJavaAnswer(Long chatId, List<List<InlineKeyboardButton>> buttons) throws TelegramApiException {
         buttons.add(List.of(InlineKeyboardButton.builder()
                 .text(QUESTION.getCode() + "Получить вопрос" + QUESTION.getCode())
                 .callbackData("javaQuestion").build()));
@@ -97,7 +97,7 @@ public class JavaQuizBot extends TelegramLongPollingBot {
                         .build());
     }
 
-    private void giveQuestion(Long chatId, List<List<InlineKeyboardButton>> buttons) throws TelegramApiException {
+    private void giveJavaQuestion(Long chatId, List<List<InlineKeyboardButton>> buttons) throws TelegramApiException {
         Questions questions = questionService.getRandomQuestionFor(chatId);
         if (questions == null) {
             execute(
@@ -112,7 +112,7 @@ public class JavaQuizBot extends TelegramLongPollingBot {
 
         buttons.add(List.of(InlineKeyboardButton.builder()
                 .text("Ответ" + CHECK.getCode())
-                .callbackData("giveAnswer").build()));
+                .callbackData("giveJavaAnswer").build()));
 
         execute(
                 SendMessage.builder()
