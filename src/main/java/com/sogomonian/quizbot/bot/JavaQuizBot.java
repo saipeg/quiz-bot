@@ -1,7 +1,7 @@
 package com.sogomonian.quizbot.bot;
 
 import com.sogomonian.quizbot.config.Config;
-import com.sogomonian.quizbot.helper.Emojis;
+import com.sogomonian.quizbot.model.Emojis;
 import com.sogomonian.quizbot.model.KubernetesQuestions;
 import com.sogomonian.quizbot.model.Questions;
 import com.sogomonian.quizbot.model.User;
@@ -26,7 +26,7 @@ import javax.annotation.PostConstruct;
 import java.util.ArrayList;
 import java.util.List;
 
-import static com.sogomonian.quizbot.helper.Emojis.*;
+import static com.sogomonian.quizbot.model.Emojis.*;
 
 @Log4j2
 @Component

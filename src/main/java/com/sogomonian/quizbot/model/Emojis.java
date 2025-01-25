@@ -1,4 +1,4 @@
-package com.sogomonian.quizbot.helper;
+package com.sogomonian.quizbot.model;
 
 /**
  * @created 22/05/2022
