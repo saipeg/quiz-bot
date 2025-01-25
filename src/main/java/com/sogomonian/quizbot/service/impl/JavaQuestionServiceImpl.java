@@ -49,7 +49,6 @@ public class JavaQuestionServiceImpl implements QuestionService {
             userServiceImpl.getVacantQuestions().put(chatId, questions);
             return question;
         } else {
-            System.out.println("      ВОПРОСЫ ЗАКОНЧМИЛИСЬ    ");
             return null;
         }
 

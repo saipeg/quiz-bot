@@ -157,39 +157,38 @@ public class JavaQuizBot extends TelegramLongPollingBot {
     private void handleMessage(Message message) {
         String userName = message.getFrom().getFirstName();
 
-        String chatId = message.getChatId().toString();
-        checkComeback(chatId);
+        Long chatId = message.getChatId();
+        boolean isChatIdNew = isChatIdNew(chatId);
 
         if (message.getText().equals("/start")) {
-            userService.addQuestionsForClient(Long.parseLong(chatId));
+            userService.addQuestionsForClient(message.getChatId());
 
             List<List<InlineKeyboardButton>> buttons = getQuestionButton();
-            execute(buildMessageToSend(message.getChatId(), buttons, userName + config.getWelcome()));
+            if (isChatIdNew) {
+                execute(buildMessageToSend(message.getChatId(), buttons, userName + config.getWelcome_for_new_users()));
+            } else {
+                execute(buildMessageToSend(message.getChatId(), buttons, userName + config.getWelcome_for_already_users()));
+            }
 
         } else {
-            execute(
-                    SendMessage.builder()
-                            .chatId(chatId)
-                            .text(userName + ", не мямли, нажми кнопку \"Получить вопрос\" или \"Ответ\"")
-                            .build());
+            String messageToUSer = ", не мямли, нажми кнопку \"Получить вопрос\" или \"Ответ\"";
+            execute(SendMessage.builder().chatId(chatId.toString()).text(userName + messageToUSer).build());
         }
 
     }
 
-    private void checkComeback(String chatId) {
-        List<User> allUsers = userService.getAllUsers();
+    private boolean isChatIdNew(Long chatId) {
+        boolean isUserAlreadyUsed = userService.getAllUsers().stream()
+                .anyMatch(user -> user.getChatId().equals(chatId.toString()));
 
-        allUsers.stream()
-                .filter(user -> user.getChatId().equals(chatId))
-                .findAny()
-                .ifPresentOrElse(
-                        id -> System.out.println("ТАКОЙ ЧАТ АЙДИ ЕСТЬ: " + chatId),
-                        () -> {
-                            System.out.println("ТАКОЙ ЧАТ АЙДИ НЕ НАЙДЕН: " + chatId);
-                            userService.addNewChatIdToBase(chatId);
-                        }
-                );
-
+        if (isUserAlreadyUsed) {
+            log.info("ТАКОЙ ЧАТ АЙДИ ЕСТЬ: " + chatId);
+            return false;
+        } else {
+            log.info("ТАКОЙ ЧАТ АЙДИ НЕ НАЙДЕН: " + chatId);
+            userService.addNewChatIdToBase(chatId.toString());
+            return true;
+        }
     }
 
     private List<List<InlineKeyboardButton>> getQuestionButton() {

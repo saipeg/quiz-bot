@@ -11,6 +11,8 @@ public class Config {
     private String token;
     @Value("${bot.name}")
     private String username;
-    @Value("${bot.welcome}")
-    private String welcome;
+    @Value("${bot.welcome_for_new_users}")
+    private String welcome_for_new_users;
+    @Value("${bot.welcome_for_already_users}")
+    private String welcome_for_already_users;
 }

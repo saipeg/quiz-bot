@@ -51,7 +51,6 @@ public class KuberQuestionServiceImpl implements QuestionService<KubernetesQuest
             userService.getVacantQuestions().put(chatId, questions);
             return question;
         } else {
-            System.out.println("      ВОПРОСЫ ЗАКОНЧМИЛИСЬ    ");
             return null;
         }
     }
