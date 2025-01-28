@@ -21,6 +21,8 @@ import java.util.Map;
 @RequiredArgsConstructor
 public class KuberQuestionServiceImpl implements QuestionService<KubernetesQuestions> {
 
+    public static final String TOPIC = "Kubernetes";
+
     private final KubernetesRepository kubernetesRepository;
     private List<KubernetesQuestions> allQuestions;
     private UserServiceImpl userService;

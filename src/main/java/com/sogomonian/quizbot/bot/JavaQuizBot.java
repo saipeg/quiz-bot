@@ -27,6 +27,8 @@ import java.util.ArrayList;
 import java.util.List;
 
 import static com.sogomonian.quizbot.model.Emojis.*;
+import static com.sogomonian.quizbot.service.QuestionService.GAME_OVER;
+import static com.sogomonian.quizbot.service.impl.JavaQuestionServiceImpl.TOPIC;
 
 @Log4j2
 @Component
@@ -98,7 +100,7 @@ public class JavaQuizBot extends TelegramLongPollingBot {
 
         Questions questions = questionService.getRandomQuestionFor(chatId);
         if (questions == null) {
-            String message = "Ты ответил на все вопросы раздела Java. Жми /start и выбери другую тему";
+            String message = String.format(GAME_OVER, JavaQuestionServiceImpl.TOPIC);
             execute(buildMessageToSend(chatId, buttons, message));
             return;
         }
@@ -127,7 +129,7 @@ public class JavaQuizBot extends TelegramLongPollingBot {
         KubernetesQuestions questions = kuberQuestionService.getRandomQuestionFor(chatId);
 
         if (questions == null) {
-            String message = "Ты ответил на все вопросы раздела Kubernetes. Жми /start и выбери другую тему";
+            String message = String.format(GAME_OVER, KuberQuestionServiceImpl.TOPIC);
             execute(buildMessageToSend(chatId, buttons, message));
             return;
         }

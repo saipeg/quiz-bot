@@ -19,6 +19,8 @@ import java.util.*;
 @RequiredArgsConstructor
 public class JavaQuestionServiceImpl implements QuestionService {
 
+    public static final String TOPIC = "Java";
+
     private QuestionsRepository questionsRepository;
     private List<Questions> allQuestions;
     private UserServiceImpl userServiceImpl;
